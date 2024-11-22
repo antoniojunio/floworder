@@ -3,6 +3,7 @@ package io.github.levva.floworder.controller;
 import io.github.levva.floworder.dto.OrderDTO;
 import io.github.levva.floworder.model.Order;
 import io.github.levva.floworder.service.OrderService;
+import io.github.levva.floworder.util.ApiResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -21,8 +22,10 @@ public class OrderController {
     }
 
     @PostMapping
-    public ResponseEntity<Order> createOrder(@Validated @RequestBody OrderDTO dto) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(service.createOrder(dto));
+    public ResponseEntity<ApiResponse<Order>> createOrder(@Validated @RequestBody OrderDTO dto) {
+        Order order = service.createOrder(dto);
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(ApiResponse.success("Pedido criado com sucesso", order));
     }
 
     @GetMapping
