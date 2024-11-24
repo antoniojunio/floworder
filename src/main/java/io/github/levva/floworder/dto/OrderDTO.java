@@ -17,4 +17,7 @@ public class OrderDTO {
 
     public OrderDTO() {
     }
+
+    public OrderDTO(String testOrder, double v) {
+    }
 }

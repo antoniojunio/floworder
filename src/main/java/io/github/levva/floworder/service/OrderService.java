@@ -9,7 +9,9 @@ import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -29,16 +31,32 @@ public class OrderService {
         return orderRepository.save(order);
     }
 
-    public List<Order> processExternalOrders(List<ExternalOrderDTO> externalOrders) {
-        List<Order> orders = externalOrders.stream()
-                .filter(dto -> !orderRepository.existsByDescription(dto.getDescription()))
-                .map(dto -> modelMapper.map(dto, Order.class))
-                .collect(Collectors.toList());
+    public List<OrderDTO> processExternalOrders(List<ExternalOrderDTO> externalOrders) {
+        Set<String> uniqueDescriptions = new HashSet<>();
 
-        return orderRepository.saveAll(orders);
+        List<Order> savedOrders = externalOrders.stream()
+                .filter(order -> uniqueDescriptions.add(order.getDescription()))
+                .map(dto -> {
+                    Order order = new Order();
+                    order.setDescription(dto.getDescription());
+                    order.setPrice(dto.getPrice());
+                    order.setOrderDate(LocalDateTime.now());
+                    order.setStatus(OrderStatus.PENDING);
+                    return order;
+                })
+                .map(orderRepository::save)
+                .toList();
+
+        return savedOrders.stream()
+                .map(this::convertToOrderDTO)
+                .collect(Collectors.toList());
     }
 
     public List<Order> getAllOrders() {
         return orderRepository.findAll();
+    }
+
+    private OrderDTO convertToOrderDTO(Order order) {
+        return modelMapper.map(order, OrderDTO.class);
     }
 }

@@ -2,11 +2,15 @@ package io.github.levva.floworder.dto;
 
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class ExternalOrderDTO {
     private String externalId;
 
@@ -17,4 +21,7 @@ public class ExternalOrderDTO {
     @Positive(message = "O preço deve ser maior que zero")
     private Double price;
     private LocalDateTime orderDate;
+
+    public ExternalOrderDTO(String s, double v) {
+    }
 }
