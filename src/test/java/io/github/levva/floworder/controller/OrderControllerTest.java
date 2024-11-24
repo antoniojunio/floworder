@@ -49,7 +49,6 @@ class OrderControllerTest {
         OrderDTO orderDTO = new OrderDTO();
         orderDTO.setDescription("Pedido Teste");
         orderDTO.setPrice(120.0);
-
         mockMvc.perform(post("/api/orders")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(orderDTO)))
@@ -66,7 +65,6 @@ class OrderControllerTest {
                 new ExternalOrderDTO("External Order 1", 150.0),
                 new ExternalOrderDTO("External Order 2", 200.0)
         );
-
         Mockito.when(orderService.processExternalOrders(Mockito.anyList()))
                 .thenReturn(List.of(
                         new OrderDTO("External Order 1", 150.0),
